@@ -4,6 +4,7 @@ import json
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import status
 
 from .models import Order
 from .models import OrderItem
@@ -62,12 +63,14 @@ def product_list_api(request):
     })
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def register_order(request):
-    try:
-        order_details = json.loads(request.body.decode())
-    except ValueError:
-        return Response({})
+    order_details = request.data
+    if 'products' not in order_details.keys() \
+        or not isinstance(order_details['products'], list) \
+        or not order_details['products']:
+            return Response({'error': 'products key not presented or not list'},
+                            status=status.HTTP_404_NOT_FOUND)
     order = Order.objects.create(
     firstname = order_details['firstname'],
     lastname = order_details['lastname'],
