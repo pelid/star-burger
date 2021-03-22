@@ -1,13 +1,11 @@
 from django.http import JsonResponse
 from django.templatetags.static import static
-import json
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
 from .models import Order
-from .models import OrderItem
 from .models import Product
 
 
@@ -66,16 +64,49 @@ def product_list_api(request):
 @api_view(['POST'])
 def register_order(request):
     order_details = request.data
-    if 'products' not in order_details.keys() \
-        or not isinstance(order_details['products'], list) \
-        or not order_details['products']:
-            return Response({'error': 'products key not presented or not list'},
-                            status=status.HTTP_404_NOT_FOUND)
+    products = Product.objects.all()
+    products_id = []
+    for product in products:
+        products_id.append(product.id)
+
+    if 'products' not in order_details.keys():
+        return Response(['products key not presented'], status=400)
+
+    if order_details['products'] is None:
+        return Response(['products key is None'], status=400)
+
+    if not isinstance(order_details['products'], list):
+        return Response(['products key not list'], status=400)
+
+    if not order_details['products']:
+        return Response(['products key does not matter'], status=400)
+
+    if 'firstname' and 'lastname' and 'phonenumber' and 'address' not in order_details.keys():
+        return Response(['no order keys'], status=400)
+
+    if order_details['firstname'] is None \
+        and order_details['lastname'] is None \
+        and order_details['phonenumber'] is None \
+        and order_details['address'] is None:
+        return Response(['all order keys are None'])
+
+    if order_details['firstname'] is None:
+        return Response(['firstname key is None'], status=400)
+
+    if not order_details['phonenumber']:
+        return Response(['phonenumber key does not matter'], status=400)
+
+    if order_details['products'][0]['product'] not in products_id:
+        return Response(['product number does not exist'], status=400)
+
+    if not isinstance(order_details['firstname'], str):
+        return Response(['products key not str(string)'], status=400)
+
     order = Order.objects.create(
-    firstname = order_details['firstname'],
-    lastname = order_details['lastname'],
-    address = order_details['address'],
-    phonenumber = order_details['phonenumber'],
+        firstname=order_details['firstname'],
+        lastname=order_details['lastname'],
+        address=order_details['address'],
+        phonenumber=order_details['phonenumber'],
     )
     for commodity in order_details['products']:
         product = get_object_or_404(Product, id=commodity['product'])
