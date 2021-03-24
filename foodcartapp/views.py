@@ -86,5 +86,9 @@ def register_order(request):
     )
     for commodity in serializer.validated_data['products']:
         product = get_object_or_404(Product, name=commodity['product'])
-        order.items.create(product=product, quantity=commodity['quantity'])
+        order.items.create(
+            product=product,
+            quantity=commodity['quantity'],
+            price=commodity['quantity'] * product.price
+        )
     return Response(serializer.data)
