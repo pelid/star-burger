@@ -74,8 +74,9 @@ class Order(models.Model):
     lastname = models.CharField('фамилия', max_length=20)
     address = models.CharField('адрес', max_length=40)
     phonenumber = PhoneNumberField('телефон', max_length=15)
-    STATUS = ('Не обработан', 'Не обработан'), ('Обработан', 'Обработан')
-    order_status = models.CharField(max_length=15, choices=STATUS, default='Не обработан')
+    comment = models.TextField('Комментарий', max_length=300, blank=True)
+    ORDER_STATUS = ('Не обработан', 'Не обработан'), ('Обработан', 'Обработан')
+    order_status = models.CharField('Статус', max_length=15, choices=ORDER_STATUS, default='Не обработан')
 
     def __str__(self):
         return f'{self.firstname} {self.lastname} {self.address}'
