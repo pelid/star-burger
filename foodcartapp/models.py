@@ -76,11 +76,13 @@ class Order(models.Model):
     address = models.CharField('адрес', max_length=40)
     phonenumber = PhoneNumberField('телефон', max_length=15)
     comment = models.TextField('Комментарий', max_length=300, blank=True)
-    ORDER_STATUS = ('Не обработан', 'Не обработан'), ('Обработан', 'Обработан')
-    order_status = models.CharField('Статус', max_length=15, choices=ORDER_STATUS, default='Не обработан')
+    ORDER_STATUS = ('no', 'Не обработан'), ('yes', 'Обработан')
+    order_status = models.CharField('Статус', max_length=15, choices=ORDER_STATUS, default='no')
     registated_at = models.DateTimeField('Заказ получен', default=timezone.now)
     called_at = models.DateTimeField('Звонок произведен', null=True, blank=True)
     delivered_at = models.DateTimeField('Доставка', null=True, blank=True)
+    PAYMENT_METHOD = ('cash', 'Наличные'), ('card', 'Банковская карта')
+    payment_method = models.CharField('Способ оплаты', max_length=15, choices=PAYMENT_METHOD, default='')
 
     def __str__(self):
         return f'{self.firstname} {self.lastname} {self.address}'
