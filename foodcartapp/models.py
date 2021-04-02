@@ -2,6 +2,7 @@ from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
+from django.db.models.query import Prefetch
 
 
 class Restaurant(models.Model):
@@ -70,6 +71,22 @@ class RestaurantMenuItem(models.Model):
         ]
 
 
+class OrderQuerySet(models.QuerySet):
+
+    def fetch_restaurants(self):
+        self = self.prefetch_related(Prefetch('items', queryset=OrderItem.objects.select_related('product')))
+        restaurants = Restaurant.objects.all().prefetch_related(
+            Prefetch('menu_items', queryset=RestaurantMenuItem.objects.select_related('product')))
+        for order in self:
+            order.restaurants = []
+            items = set([item.product.name for item in order.items.all()])
+            for restaurant in restaurants:
+                set_menu_items = set([item.product.name for item in restaurant.menu_items.all()])
+                if items.issubset(set_menu_items):
+                    order.restaurants.append(restaurant)
+        return self
+
+
 class Order(models.Model):
     firstname = models.CharField('имя', max_length=20)
     lastname = models.CharField('фамилия', max_length=20)
@@ -83,6 +100,8 @@ class Order(models.Model):
     delivered_at = models.DateTimeField('Доставка', null=True, blank=True)
     PAYMENT_METHOD = ('cash', 'Наличные'), ('card', 'Банковская карта')
     payment_method = models.CharField('Способ оплаты', max_length=15, choices=PAYMENT_METHOD, default='')
+    objects = OrderQuerySet.as_manager()
+    restaurant = models.ForeignKey('Restaurant', on_delete=models.SET_NULL, verbose_name='Ресторан', null=True)
 
     def __str__(self):
         return f'{self.firstname} {self.lastname} {self.address}'
