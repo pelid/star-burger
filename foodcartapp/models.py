@@ -3,6 +3,16 @@ from phonenumber_field.modelfields import PhoneNumberField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
 from django.db.models.query import Prefetch
+from .utils import get_coordinates
+from geopy import distance
+from django.conf import settings
+
+
+class Place(models.Model):
+    address = models.CharField('адрес', max_length=150)
+    lat = models.FloatField('широта')
+    lon = models.FloatField('долгота')
+    update_date = models.DateTimeField('дата обновления', auto_now=True)
 
 
 class Restaurant(models.Model):
@@ -75,15 +85,19 @@ class OrderQuerySet(models.QuerySet):
 
     def fetch_restaurants(self):
         self = self.prefetch_related(Prefetch('items', queryset=OrderItem.objects.select_related('product')))
-        restaurants = Restaurant.objects.all().prefetch_related(
-            Prefetch('menu_items', queryset=RestaurantMenuItem.objects.select_related('product')))
         for order in self:
+            order_items = set([item.product.name for item in order.items.all()])
+            order.coord = get_coordinates(settings.YANDEX_API_KEY, order.address)
+            restaurants = Restaurant.objects.all().prefetch_related(
+                Prefetch('menu_items', queryset=RestaurantMenuItem.objects.select_related('product')))
             order.restaurants = []
-            items = set([item.product.name for item in order.items.all()])
             for restaurant in restaurants:
-                set_menu_items = set([item.product.name for item in restaurant.menu_items.all()])
-                if items.issubset(set_menu_items):
+                menu_items = set([item.product.name for item in restaurant.menu_items.all() if item.availability])
+                if order_items.issubset(menu_items):
+                    restaurant.coord = get_coordinates(settings.YANDEX_API_KEY, restaurant.address)
+                    restaurant.distance = round(distance.distance(order.coord, restaurant.coord).km, 3)
                     order.restaurants.append(restaurant)
+            order.restaurants.sort(key=lambda place: place.distance)
         return self
 
 

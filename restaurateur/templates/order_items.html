@@ -42,7 +42,7 @@
             <summary>Развернуть</summary>
               <ul>
                 {% for restaurant in item.restaurants %}
-                  <li>{{ restaurant }}<br></li>
+                  <li>{{ restaurant }} {{restaurant.distance }}<br></li>
                 {% endfor %}
               </ul>
           </details>
