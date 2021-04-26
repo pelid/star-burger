@@ -85,6 +85,7 @@ class OrderQuerySet(models.QuerySet):
 
     def fetch_restaurants(self):
         self = self.prefetch_related(Prefetch('items', queryset=OrderItem.objects.select_related('product')))
+        orders = []
         for order in self:
             order_items = set([item.product.name for item in order.items.all()])
             order.coord = get_coordinates(settings.YANDEX_API_KEY, order.address)
@@ -98,8 +99,8 @@ class OrderQuerySet(models.QuerySet):
                     restaurant.distance = round(distance.distance(order.coord, restaurant.coord).km, 3)
                     order.restaurants.append(restaurant)
             order.restaurants.sort(key=lambda place: place.distance)
-        return self
-
+            orders.append(order)
+        return orders
 
 class Order(models.Model):
     firstname = models.CharField('имя', max_length=20)
