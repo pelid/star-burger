@@ -3,16 +3,9 @@ from phonenumber_field.modelfields import PhoneNumberField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
 from django.db.models.query import Prefetch
-from .utils import get_coordinates
+from places.utils import get_coordinates
 from geopy import distance
 from django.conf import settings
-
-
-class Place(models.Model):
-    address = models.CharField('адрес', max_length=150)
-    lat = models.FloatField('широта')
-    lon = models.FloatField('долгота')
-    update_date = models.DateTimeField('дата обновления', auto_now=True)
 
 
 class Restaurant(models.Model):
@@ -101,6 +94,7 @@ class OrderQuerySet(models.QuerySet):
             order.restaurants.sort(key=lambda place: place.distance)
             orders.append(order)
         return orders
+
 
 class Order(models.Model):
     firstname = models.CharField('имя', max_length=20)

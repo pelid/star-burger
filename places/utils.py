@@ -1,14 +1,14 @@
 import requests
-from foodcartapp import models
+from places.models import Place
 from django.core.exceptions import ObjectDoesNotExist
 
 
 def get_coordinates(apikey, address):
     try:
-        place = models.Place.objects.get(address=address)
+        place = Place.objects.get(address=address)
     except ObjectDoesNotExist:
         lon, lat = fetch_coordinates(apikey, address)
-        place = models.Place(address=address, lat=lat, lon=lon)
+        place = Place(address=address, lat=lat, lon=lon)
         place.save()
     return place.lon, place.lat
 
