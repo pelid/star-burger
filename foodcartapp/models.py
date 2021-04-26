@@ -108,10 +108,10 @@ class Order(models.Model):
     called_at = models.DateTimeField('Звонок произведен', null=True, blank=True)
     delivered_at = models.DateTimeField('Доставка', null=True, blank=True)
     PAYMENT_METHOD = ('cash', 'Наличные'), ('card', 'Банковская карта')
-    payment_method = models.CharField('Способ оплаты', max_length=15, choices=PAYMENT_METHOD, default='')
+    payment_method = models.CharField('Способ оплаты', max_length=15, choices=PAYMENT_METHOD, blank=True)
     objects = OrderQuerySet.as_manager()
     restaurant = models.ForeignKey('Restaurant', on_delete=models.SET_NULL, verbose_name='Ресторан', null=True,
-                                   related_name='orders')
+                                   blank=True, related_name='orders')
 
     def __str__(self):
         return f'{self.firstname} {self.lastname} {self.address}'
