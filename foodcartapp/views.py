@@ -86,11 +86,13 @@ def register_order(request):
         address=serializer.validated_data['address'],
         phonenumber=serializer.validated_data['phonenumber'],
     )
-    for commodity in serializer.validated_data['products']:
-        product = get_object_or_404(Product, name=commodity['product'])
-        order.items.create(
-            product=product,
+    OrderItem.objects.bulk_create([
+        OrderItem(
+            product=commodity['product'],
             quantity=commodity['quantity'],
-            price=commodity['quantity'] * product.price
+            price=commodity['quantity'] * commodity['product'].price,
+            order_id=order.id
         )
+        for commodity in serializer.validated_data['products']
+    ])
     return Response(serializer.data)
