@@ -97,11 +97,11 @@ class OrderQuerySet(models.QuerySet):
 
 
 class Order(models.Model):
-    ORDER_STATUS = [
+    ORDER_STATUS_CHOICES = [
         ('no', 'Не обработан'),
         ('yes', 'Обработан')
     ]
-    PAYMENT_METHOD = [
+    PAYMENT_METHOD_CHOICES = [
         ('cash', 'Наличные'),
         ('card', 'Банковская карта')
     ]
@@ -110,11 +110,11 @@ class Order(models.Model):
     address = models.CharField('адрес', max_length=40)
     phonenumber = PhoneNumberField('телефон', max_length=15)
     comment = models.TextField('Комментарий', max_length=300, blank=True)
-    order_status = models.CharField('Статус', max_length=15, choices=ORDER_STATUS, default='no', db_index=True)
+    order_status = models.CharField('Статус', max_length=15, choices=ORDER_STATUS_CHOICES, default='no', db_index=True)
     registated_at = models.DateTimeField('Заказ получен', default=timezone.now, db_index=True)
     called_at = models.DateTimeField('Звонок произведен', null=True, blank=True, db_index=True)
     delivered_at = models.DateTimeField('Фактическое время доставки', null=True, blank=True, db_index=True)
-    payment_method = models.CharField('Способ оплаты', max_length=15, choices=PAYMENT_METHOD, blank=True, db_index=True)
+    payment_method = models.CharField('Способ оплаты', max_length=15, choices=PAYMENT_METHOD_CHOICES, blank=True, db_index=True)
     objects = OrderQuerySet.as_manager()
     restaurant = models.ForeignKey('Restaurant', on_delete=models.SET_NULL, verbose_name='Ресторан', null=True,
                                    blank=True, related_name='orders')
