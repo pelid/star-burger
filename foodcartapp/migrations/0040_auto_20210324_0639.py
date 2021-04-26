@@ -5,9 +5,11 @@ from django.db import migrations
 
 def count_price_old_orders(apps, schema_editor):
     OrderItem = apps.get_model('foodcartapp', 'OrderItem')
-    for item in OrderItem.objects.all():
-        item.price = item.quantity * item.product.price
-        item.save()
+    order_item_set = OrderItem.objects.all()
+    if order_item_set.exists():
+        for item in order_item_set.iterator():
+            item.price = item.quantity * item.product.price
+            item.save()
 
 
 class Migration(migrations.Migration):
