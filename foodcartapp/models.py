@@ -97,28 +97,34 @@ class OrderQuerySet(models.QuerySet):
 
 
 class Order(models.Model):
+    ORDER_STATUS = [
+        ('no', 'Не обработан'),
+        ('yes', 'Обработан')
+    ]
+    PAYMENT_METHOD = [
+        ('cash', 'Наличные'),
+        ('card', 'Банковская карта')
+    ]
     firstname = models.CharField('имя', max_length=20)
     lastname = models.CharField('фамилия', max_length=20)
     address = models.CharField('адрес', max_length=40)
     phonenumber = PhoneNumberField('телефон', max_length=15)
     comment = models.TextField('Комментарий', max_length=300, blank=True)
-    ORDER_STATUS = ('no', 'Не обработан'), ('yes', 'Обработан')
     order_status = models.CharField('Статус', max_length=15, choices=ORDER_STATUS, default='no')
     registated_at = models.DateTimeField('Заказ получен', default=timezone.now)
     called_at = models.DateTimeField('Звонок произведен', null=True, blank=True)
     delivered_at = models.DateTimeField('Фактическое время доставки', null=True, blank=True)
-    PAYMENT_METHOD = ('cash', 'Наличные'), ('card', 'Банковская карта')
     payment_method = models.CharField('Способ оплаты', max_length=15, choices=PAYMENT_METHOD, blank=True)
     objects = OrderQuerySet.as_manager()
     restaurant = models.ForeignKey('Restaurant', on_delete=models.SET_NULL, verbose_name='Ресторан', null=True,
                                    blank=True, related_name='orders')
 
-    def __str__(self):
-        return f'{self.firstname} {self.lastname} {self.address}'
-
     class Meta:
         verbose_name = 'заказ'
         verbose_name_plural = 'заказы'
+
+    def __str__(self):
+        return f'{self.firstname} {self.lastname} {self.address}'
 
 
 class OrderItem(models.Model):
