@@ -110,7 +110,8 @@ class Order(models.Model):
     PAYMENT_METHOD = ('cash', 'Наличные'), ('card', 'Банковская карта')
     payment_method = models.CharField('Способ оплаты', max_length=15, choices=PAYMENT_METHOD, default='')
     objects = OrderQuerySet.as_manager()
-    restaurant = models.ForeignKey('Restaurant', on_delete=models.SET_NULL, verbose_name='Ресторан', null=True)
+    restaurant = models.ForeignKey('Restaurant', on_delete=models.SET_NULL, verbose_name='Ресторан', null=True,
+                                   related_name='orders')
 
     def __str__(self):
         return f'{self.firstname} {self.lastname} {self.address}'
@@ -122,7 +123,7 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     order = models.ForeignKey('Order', on_delete=models.CASCADE, related_name='items', verbose_name='заказ')
-    product = models.ForeignKey('Product', on_delete=models.CASCADE, verbose_name='товар')
+    product = models.ForeignKey('Product', on_delete=models.CASCADE, verbose_name='товар', related_name='items')
     quantity = models.IntegerField('количество', validators=[MinValueValidator(0), MaxValueValidator(20)])
     price = models.DecimalField('цена', max_digits=8, decimal_places=2, validators=[MinValueValidator(0)], null=True)
 
