@@ -106,7 +106,7 @@ class Order(models.Model):
     order_status = models.CharField('Статус', max_length=15, choices=ORDER_STATUS, default='no')
     registated_at = models.DateTimeField('Заказ получен', default=timezone.now)
     called_at = models.DateTimeField('Звонок произведен', null=True, blank=True)
-    delivered_at = models.DateTimeField('Доставка', null=True, blank=True)
+    delivered_at = models.DateTimeField('Фактическое время доставки', null=True, blank=True)
     PAYMENT_METHOD = ('cash', 'Наличные'), ('card', 'Банковская карта')
     payment_method = models.CharField('Способ оплаты', max_length=15, choices=PAYMENT_METHOD, blank=True)
     objects = OrderQuerySet.as_manager()
