@@ -142,6 +142,7 @@ parcel build bundles-src/index.js -d bundles --public-url="./"
 - `DEBUG` — дебаг-режим. Поставьте `False`.
 - `SECRET_KEY` — секретный ключ проекта. Он отвечает за шифрование на сайте. Например, им зашифрованы все пароли на вашем сайте. Не стоит использовать значение по-умолчанию, **замените на своё**.
 - `ALLOWED_HOSTS` — [см. документацию Django](https://docs.djangoproject.com/en/3.1/ref/settings/#allowed-hosts)
+- `YANDEX_API_KEY` - по [gif-инструкци](https://dvmn.org/filer/canonical/1571923627/382/) получите `API ключ` в [кабинете разработчика](https://developer.tech.yandex.ru/) `Yandex geocoder API`. Он позволит рассчитывать расстояние между объектами.
 
 ## Цели проекта
 
