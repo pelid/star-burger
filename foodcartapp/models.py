@@ -105,6 +105,7 @@ class Order(models.Model):
         ('cash', 'Наличные'),
         ('card', 'Банковская карта')
     ]
+
     firstname = models.CharField('имя', max_length=20)
     lastname = models.CharField('фамилия', max_length=20)
     address = models.CharField('адрес', max_length=40)
@@ -114,7 +115,8 @@ class Order(models.Model):
     registated_at = models.DateTimeField('Заказ получен', default=timezone.now, db_index=True)
     called_at = models.DateTimeField('Звонок произведен', null=True, blank=True, db_index=True)
     delivered_at = models.DateTimeField('Фактическое время доставки', null=True, blank=True, db_index=True)
-    payment_method = models.CharField('Способ оплаты', max_length=15, choices=PAYMENT_METHOD_CHOICES, blank=True, db_index=True)
+    payment_method = models.CharField('Способ оплаты', max_length=15, choices=PAYMENT_METHOD_CHOICES, blank=True,
+                                      db_index=True)
     objects = OrderQuerySet.as_manager()
     restaurant = models.ForeignKey('Restaurant', on_delete=models.SET_NULL, verbose_name='Ресторан', null=True,
                                    blank=True, related_name='orders')
