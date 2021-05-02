@@ -117,9 +117,10 @@ class Order(models.Model):
     delivered_at = models.DateTimeField('Фактическое время доставки', null=True, blank=True, db_index=True)
     payment_method = models.CharField('Способ оплаты', max_length=15, choices=PAYMENT_METHOD_CHOICES, blank=True,
                                       db_index=True)
-    objects = OrderQuerySet.as_manager()
     restaurant = models.ForeignKey('Restaurant', on_delete=models.SET_NULL, verbose_name='Ресторан', null=True,
                                    blank=True, related_name='orders')
+    
+    objects = OrderQuerySet.as_manager()
 
     class Meta:
         verbose_name = 'заказ'
