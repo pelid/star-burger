@@ -41,6 +41,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'rollbar.contrib.django.middleware.RollbarNotifierMiddlewareExcluding404',
 ]
 
 ROOT_URLCONF = 'star_burger.urls'
@@ -127,3 +128,9 @@ STATICFILES_DIRS = [
 ]
 
 YANDEX_API_KEY = env('YANDEX_API_KEY', None)
+
+ROLLBAR = {
+    'access_token': env('ROLLBAR_ACCESS_TOKEN', None),
+    'environment': env('ROLLBAR_ENVIRONMENT', 'development'),
+    'root': BASE_DIR,
+}

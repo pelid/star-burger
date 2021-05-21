@@ -9,3 +9,4 @@ djangorestframework==3.12.2
 python-dotenv==0.15.0
 requests==2.25.1
 geopy==2.1.0
+rollbar==0.15.2
