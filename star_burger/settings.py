@@ -85,9 +85,11 @@ WSGI_APPLICATION = 'star_burger.wsgi.application'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+DEFAULT_DATABASE_URL = 'postgres://starburger:Claujtof@127.0.0.1:5432/starburger'
+
 DATABASES = {
     'default': dj_database_url.config(
-        default='sqlite:////{0}'.format(os.path.join(BASE_DIR, 'db.sqlite3'))
+        default=DEFAULT_DATABASE_URL
     )
 }
 

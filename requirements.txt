@@ -1,3 +1,4 @@
+psycopg2==2.8.6
 django==3.0.7
 django-debug-toolbar==2.2
 dj-database-url==0.5.0
@@ -11,3 +12,4 @@ requests==2.25.1
 geopy==2.1.0
 rollbar==0.15.2
 GitPython==3.1.17
+dj_database_url==0.5.0
