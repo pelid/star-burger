@@ -134,3 +134,7 @@ ROLLBAR = {
     'environment': env('ROLLBAR_ENVIRONMENT', 'development'),
     'root': BASE_DIR,
 }
+
+REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER': 'rollbar.contrib.django_rest_framework.post_exception_handler'
+}
